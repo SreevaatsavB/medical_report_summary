@@ -1,0 +1,8 @@
+poppler-utils
+azure-ai-formrecognizer
+azure-core
+boto3
+logging
+pdf2image
+PyPDF2
+pandas
