@@ -98,7 +98,6 @@ def main():
 
     uploaded_file = st.file_uploader("Choose a PDF file", type="pdf")
 
-
     if uploaded_file is not None:
         # with open("temp.pdf", "wb") as f:
         #     f.write(uploaded_file.getbuffer())
@@ -113,11 +112,12 @@ def main():
         if filename not in st.session_state:
             st.session_state[filename] = {}
 
-
+       
         if "saved_files" not in st.session_state[filename]:
-            save_images_pdf(filename, "pdf_files")
-            st.session_state[filename]["saved_files"] = True
-
+            with st.spinner('Processing data ...'):
+                save_images_pdf(filename, "pdf_files")
+                st.session_state[filename]["saved_files"] = True
+        
         pdf_imgs_path = "pdf_files" + "/" + filename.split(".pdf")[0]
 
         pdf_imgs = os.listdir(pdf_imgs_path)
@@ -131,17 +131,18 @@ def main():
         # st.write(complete_paths)
         print(complete_paths)
         # print(sorted_paths)
-        
         if "ocr_text" not in st.session_state[filename]:
-            ocr_text = process_files_in_parallel(sorted_paths)
-            st.session_state[filename]['ocr_text'] = ocr_text
+            with st.spinner('Processing data ...'):
+                ocr_text = process_files_in_parallel(sorted_paths)
+                st.session_state[filename]['ocr_text'] = ocr_text
 
         else:
             ocr_text = st.session_state[filename]["ocr_text"]
 
         if "summary_json" not in st.session_state[filename]:
-            summary_json = generate_summary(ocr_text)
-            st.session_state[filename]["summary_json"] = summary_json
+            with st.spinner('Getting important summaries ...'):
+                summary_json = generate_summary(ocr_text)
+                st.session_state[filename]["summary_json"] = summary_json
 
         else:
             summary_json = st.session_state[filename]["summary_json"]
@@ -149,9 +150,6 @@ def main():
     
         try:
             summary_data = json.loads(summary_json)
-
-            # st.write(summary_data)
-            # print(summary_data)
             
             st.markdown("### Patient Summary")
             for item in summary_data['summary']:
@@ -172,13 +170,7 @@ def main():
             st.error("Error parsing the summary. Please try again.")
 
 
-        # Clean up temporary files
-        # os.remove("temp.pdf")
-        # for path in image_paths:
-        #     os.remove(path)
-        # os.rmdir(os.path.dirname(image_paths[0]))
 
 if __name__ == "__main__":
-    # run_apt_get("install -y poppler-utils")
     main()
     
