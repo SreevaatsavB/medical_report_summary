@@ -8,7 +8,7 @@ from get_claude_response import complete_chat
 import os 
 from pdf2image import convert_from_path
 import re
-from install_poppler import run_apt_get
+# from install_poppler import run_apt_get
 
 def save_images_pdf(pdf_path, output_dir):
 
@@ -158,6 +158,6 @@ def main():
         # os.rmdir(os.path.dirname(image_paths[0]))
 
 if __name__ == "__main__":
-    run_apt_get("install -y poppler-utils")
+    # run_apt_get("install -y poppler-utils")
     main()
     
