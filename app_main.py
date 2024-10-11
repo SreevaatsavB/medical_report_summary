@@ -151,7 +151,7 @@ def main():
         try:
             summary_data = json.loads(summary_json)
             
-            st.markdown("### Patient Summary")
+            st.markdown("## Medical Report Summary")
             for item in summary_data['summary']:
                 st.subheader(item['point'])
                 st.write(item['description'])
