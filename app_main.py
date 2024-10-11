@@ -8,7 +8,8 @@ from get_claude_response import complete_chat
 import os 
 from pdf2image import convert_from_path
 import re
-# from install_poppler import run_apt_get
+from pdf2image import convert_from_bytes
+
 
 def save_images_pdf(pdf_path, output_dir):
 
@@ -90,6 +91,7 @@ def display_pdf_page(pdf_file, page_number):
     except Exception as e:
         st.error(f"An error occurred while displaying the PDF: {str(e)}")
         st.error("Please ensure the PDF file is not corrupted and try again.")
+        st.error("If the issue persists, make sure pdf2image and its dependencies are correctly installed.")
 
 def main():
     st.title("Orthopedic Patient Summary")
