@@ -73,24 +73,23 @@ Provide only the JSON-formatted summary, with no additional text before or after
 #     st.markdown(pdf_display, unsafe_allow_html=True)
 
 def display_pdf_page(pdf_file, page_number):
-    pdf_reader = PyPDF2.PdfReader(pdf_file)
-    if page_number < 1 or page_number > len(pdf_reader.pages):
-        st.error(f"Invalid page number. The PDF has {len(pdf_reader.pages)} pages.")
-        return
-    
-    pdf_writer = PyPDF2.PdfWriter()
-    pdf_writer.add_page(pdf_reader.pages[page_number - 1])
-    pdf_bytes = io.BytesIO()
-    pdf_writer.write(pdf_bytes)
-    pdf_bytes.seek(0)
-    
-    base64_pdf = base64.b64encode(pdf_bytes.read()).decode('utf-8')
-    pdf_display = f'<embed src="data:application/pdf;base64,{base64_pdf}" width="100%" height="600" type="application/pdf">'
-    st.markdown(pdf_display, unsafe_allow_html=True)
-
-    # Fallback option if embed doesn't work
-    st.markdown(f'<a href="data:application/pdf;base64,{base64_pdf}" download="page_{page_number}.pdf">Download PDF</a>', unsafe_allow_html=True)
-
+    try:
+        # Convert PDF to image
+        images = convert_from_bytes(pdf_file.getvalue(), first_page=page_number, last_page=page_number)
+        
+        if images:
+            # Convert PIL Image to bytes
+            img_byte_arr = io.BytesIO()
+            images[0].save(img_byte_arr, format='PNG')
+            img_byte_arr = img_byte_arr.getvalue()
+            
+            # Display the image
+            st.image(img_byte_arr, caption=f'Page {page_number}', use_column_width=True)
+        else:
+            st.error(f"Failed to render page {page_number}. Please check if the PDF file is valid.")
+    except Exception as e:
+        st.error(f"An error occurred while displaying the PDF: {str(e)}")
+        st.error("Please ensure the PDF file is not corrupted and try again.")
 
 def main():
     st.title("Orthopedic Patient Summary")
