@@ -7,6 +7,7 @@ import concurrent.futures
 import os
 import re
 from pdf2image import convert_from_path
+import streamlit as st
 
 
 endpoint = st.secrets["AZURE_ENDPOINT"]
