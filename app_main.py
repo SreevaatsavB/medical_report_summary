@@ -8,8 +8,9 @@ from get_claude_response import complete_chat
 import os 
 from pdf2image import convert_from_path
 import re
+from install_poppler import run_apt_get
 
-
+run_apt_get("install -y poppler-utils")
 
 def save_images_pdf(pdf_path, output_dir):
 
